@@ -4,10 +4,10 @@ import "./styles.css";
 
 import { Square } from "./App";
 
-const root = createRoot(document.getElementById('root')!);
+const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <StrictMode>
     <Square />
-  </StrictMode>
+  </StrictMode>,
 );
