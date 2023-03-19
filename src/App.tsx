@@ -116,16 +116,20 @@ export const Board = ({ xIsNext, squares, onPlay }: BoardProps) => {
 };
 
 export const Game = () => {
-  const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array<string>(9).fill("")]);
-  const currentSquares = history[history.length - 1]!;
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove];
 
   const handlePlay = (nextSquares: string[]) => {
-    setHistory([...history, nextSquares]);
-    setXIsNext(!xIsNext);
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
   };
 
-  const jumpTo = (_nextMove: number) => {};
+  const jumpTo = (nextMove: number) => {
+    setCurrentMove(nextMove);
+  };
 
   const moves = history.map((_squares, move) => {
     let description;
@@ -135,7 +139,8 @@ export const Game = () => {
       description = "Go to game start";
     }
     return (
-      <li>
+      // rome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+      <li key={move}>
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
@@ -144,7 +149,11 @@ export const Game = () => {
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board
+          xIsNext={xIsNext}
+          squares={currentSquares!}
+          onPlay={handlePlay}
+        />
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
